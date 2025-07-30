@@ -1,0 +1,24 @@
+CREATE TABLE IF NOT EXISTS roles (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    name VARCHAR(20) NOT NULL UNIQUE CHECK (name IN ('admin', 'user'))
+);
+
+-- Таблица пользователей
+CREATE TABLE IF NOT EXISTS users (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    firstname VARCHAR(50) NOT NULL,
+    lastname VARCHAR(50) NOT NULL,
+    birth_date DATE NOT NULL,
+    balance INT NOT NULL,
+    role_id INT NOT NULL REFERENCES roles(id)
+);
+
+-- Таблица токенов обновления
+CREATE TABLE IF NOT EXISTS refresh_tokens (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token VARCHAR(255) UNIQUE NOT NULL,
+    expiry_date TIMESTAMP WITH TIME ZONE NOT NULL
+);
